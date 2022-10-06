@@ -8,6 +8,8 @@ public class FastlmsApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FastlmsApplication.class, args);
+
+
     }
 
 }
