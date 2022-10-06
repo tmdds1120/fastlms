@@ -49,6 +49,12 @@ public class AdminCategoryController {
 
         return "redirect:/admin/category/list.do";
 
+    }
+
+    @PostMapping("/admin/category/update,do")
+    public String update(Model model, CategoryInput parameter){
+
+        boolean result = categoryService.update(parameter);
 
 
     }

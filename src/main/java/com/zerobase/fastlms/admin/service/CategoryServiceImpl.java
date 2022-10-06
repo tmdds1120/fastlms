@@ -4,6 +4,7 @@ import com.zerobase.fastlms.admin.dto.CategoryDto;
 import com.zerobase.fastlms.admin.dto.MemberDto;
 import com.zerobase.fastlms.admin.entity.Category;
 import com.zerobase.fastlms.admin.mapper.MemberMapper;
+import com.zerobase.fastlms.admin.model.CategoryInput;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.admin.repository.CategoryRepository;
 import com.zerobase.fastlms.member.components.MailComponents;
@@ -61,7 +62,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public boolean update(CategoryDto category) {
+    public boolean update(CategoryInput parameter) {
+        Optional<Category> optionalCategory = categoryRepository.findById(parameter.getId());
+
+        if (optionalCategory.isPresent()){
+            Category category
+        }
+
         return false;
     }
 
