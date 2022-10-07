@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 화면</title>
+
+    <style>
+        .detail table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .detail table th, .detail table td {
+            border: solid 1px #000;
+        }
+
+        .buttons {
+            margin-text-outline: 20px;
+            text-align: center;
+        }
+
+        p.nothing {
+            text-align: center;
+            padding: 100px;
+        }
+
+        .buttons a, .buttons button {
+            border-width: 0;
+            background-color: transparent;
+            text-decoration: underline;
+            font-size: 12px;
+            line-height: 20px;
+            height: 20px;
+            color: #000;
+            cursor: pointer;
+
+        }
+
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1>강좌 관리 - 강좌 등록</h1>
+
+<div class="detail">
+    <form method="post">
+        <!--        <div th:text="${list}"></div>-->
+        <table>
+            <tbody>
+                <tr>
+                    <td>강좌 카테고리</td>
+                    <td>
+                        <select name="categoryId" required>
+                            <option value=""> 카테고리 선택 </option>
+                            <option
+
+                                    th:selected ="${detail.categoryId == x.id}"
+                                    th:each="x : ${category}" th:value="${x.id}" th:text="${x.categoryName}">기획</option>
+
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        강좌명
+                    </td>
+                    <td>
+                        <input th:value="${detail.subject}" type="text" name="subject" required placeholder="강좌명 입력"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        키워드
+                    </td>
+                    <td>
+                        <input th:value="${detail.keyword}" type="text" name="keyword" required placeholder="키워드 입력"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        요약문구
+                    </td>
+                    <td>
+                        <textarea th:text="${detail.summary}" name="summery" required placeholder="내용 입력"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        정가
+                    </td>
+                    <td>
+                        <input th:text ="${detail.price}" type="text" name="price" required placeholder="정가 입력"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        할인가격
+                    </td>
+                    <td>
+                        <input th:value="${detail.salePrice}" type="text" name="salePrice" required placeholder="판매가 입력"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        할인 종료일
+                    </td>
+                    <td>
+                        <input th:value="${detail.saleEndDt}" type="text" name="saleEndDtText" placeholder="종료일 입력"/>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+        <div class="buttons">
+            <button type="submit">강좌 수정 하기</button>
+            <button type="submit">강좌 등록 하기</button>
+            <a href="/admin/course/list.do">목록 이동</a>
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

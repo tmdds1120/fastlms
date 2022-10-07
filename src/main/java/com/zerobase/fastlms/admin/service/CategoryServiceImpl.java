@@ -66,10 +66,16 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> optionalCategory = categoryRepository.findById(parameter.getId());
 
         if (optionalCategory.isPresent()){
-            Category category
+
+            Category category = optionalCategory.get();
+            category.setCategoryName(parameter.getCategoryName());
+            category.setSortValue(parameter.getSortValue());
+            category.setUsingYn(parameter.isUsingYn());
+            categoryRepository.save(category);
         }
 
-        return false;
+
+        return true;
     }
 
     @Override
