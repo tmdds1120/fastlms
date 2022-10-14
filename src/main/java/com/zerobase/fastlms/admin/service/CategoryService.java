@@ -9,6 +9,8 @@ public interface CategoryService {
 
     List<CategoryDto> list();
 
+
+
     /**
      * 카테고리 신규 추가
      *
@@ -25,4 +27,10 @@ public interface CategoryService {
     boolean del(long id);
 
 
+    /**
+     * 프론트 카테고리 정보
+     * @param parameter
+     * @return
+     */
+    List<CategoryDto> frontList(CategoryDto parameter);
 }

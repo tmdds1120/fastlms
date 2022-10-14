@@ -4,6 +4,7 @@ package com.zerobase.fastlms.course.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,7 +35,7 @@ public class Course {
 
     long price;
     long salePrice;
-    LocalDateTime saleEndDt;
+    LocalDate saleEndDt;
 
 
     LocalDateTime regDt; //<-- 등록일(추가날짜)

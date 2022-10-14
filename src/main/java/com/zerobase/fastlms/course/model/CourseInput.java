@@ -18,6 +18,10 @@ public class CourseInput {
 
 
 
+    //삭제를 위한 데이터
+    String idList;
+
+
 
 
 }

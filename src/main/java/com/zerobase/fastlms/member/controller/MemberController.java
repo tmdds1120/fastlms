@@ -1,5 +1,10 @@
 package com.zerobase.fastlms.member.controller;
 
+import com.zerobase.fastlms.member.dto.MemberDto;
+import com.zerobase.fastlms.course.dto.TakeCourseDto;
+import com.zerobase.fastlms.course.model.ServiceResult;
+import com.zerobase.fastlms.course.service.TakeCourseService;
+import com.zerobase.fastlms.member.model.AdminMemberInput;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
 import com.zerobase.fastlms.member.service.MemberService;
@@ -12,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,6 +28,7 @@ public class MemberController {
     //  생성자 주입을 통해서 객체를 생성
 
     private final MemberService memberService;
+    private final TakeCourseService takeCourseService;
 
     @RequestMapping("/member/login")
     public String login(){
@@ -76,9 +84,9 @@ public class MemberController {
          * member 객체 생성후 거기에 post-form 으로 받아온 member 객체에 선언한
          * 멤버변수의 이름과 일치하는 파라미터들을 set, 파라미터.get 을 통해서 값을 설정
          * 그 변수들을 담은 객체의 참조변수 member를 repository의 save를 통해서 리포에 저장
-         * request 에서 서버로의 객체 전달 가능한
-         * 그 기준을 정해야 한다 , html에서 post 메서드 태그와
-         * 그 태그에 해당하는 name 지정이 필요하다
+         * request 에서 서버로의  전달 가능한
+         * 그 기준을 정해야 한다
+         *
          */
 
 
@@ -101,12 +109,9 @@ public class MemberController {
 
     }
 
-    @GetMapping("/member/info")
-    public String memberInfo(){
 
 
-        return "member/info";
-    }
+
 
 
     @GetMapping("/member/reset/password")
@@ -137,6 +142,91 @@ public class MemberController {
 
         return "member/reset_password_result";
 
+    }
+
+    @GetMapping("/member/info")
+    public String memberInfo(Model model, Principal principal){
+
+        String userId =principal.getName();
+        MemberDto detail = memberService.detail(userId);
+
+        model.addAttribute("detail",detail);
+        return "member/info";
+    }
+    @PostMapping("/member/info")
+    public String memberInfoSubmit(
+            Model model, MemberInput parameter, Principal principal){
+        String userId = principal.getName();
+        parameter.setUserId(userId);
+
+        ServiceResult result = memberService.updateMember(parameter);
+        if (!result.isResult()){
+            model.addAttribute("message",result.getMessage());
+            return "common/error";
+        }
+
+        return "redirect:/member/info";
+    }
+
+
+    @GetMapping("/member/password")
+    public String memberPassword(Model model, Principal principal){
+        String userId = principal.getName();
+        MemberDto detail = memberService.detail(userId);
+
+        model.addAttribute("detail", detail);
+
+        return "member/password";
+    }
+
+    @PostMapping("/member/password")
+    public String memberPasswordSubmit(Model model
+    , MemberInput parameter
+    , Principal principal){
+
+        String userId = principal.getName();
+        parameter.setUserId(userId);
+
+        ServiceResult result = memberService.updateMemberPassword(parameter);
+        if (!result.isResult()){
+            model.addAttribute("message",result.getMessage());
+            return "common/error";
+        }
+
+        return "redirect:/member/info";
+    }
+
+    @GetMapping("/member/takecourse")
+    public String memberTakeCourse(Model model,Principal principal){
+        String userId = principal.getName();
+        List<TakeCourseDto> list = takeCourseService.myCourse(userId);
+
+        model.addAttribute("list",list);
+
+        return "member/takecourse";
+    }
+
+    @GetMapping("/member/withdraw")
+    public String memberWithdraw(Model model){
+        return "member/withdraw";
+    }
+
+
+    @PostMapping("/member/withdraw")
+    public String memberWithdrawSubmit(Model model
+    , AdminMemberInput parameter
+    ,Principal principal){
+        String userId = principal.getName();
+
+
+        ServiceResult result = memberService.withdraw(userId,parameter.getPassword());
+        if(!result.isResult()){
+            model.addAttribute("message",result.getMessage());
+
+            return "common/error";
+        }
+
+        return "redirect:/member/logout";
     }
 
 

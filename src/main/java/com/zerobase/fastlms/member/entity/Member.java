@@ -21,11 +21,12 @@ public class Member implements MemberCode{
 
     @Id
     private String userId;
-
     private String userName;
     private String phone;
     private String password;
     private LocalDateTime regDt;
+    //회원정보 수정일
+    private LocalDateTime udtDt;
 
 
     //메일-> 인증후 서비스 이용가능하게
@@ -43,6 +44,12 @@ public class Member implements MemberCode{
     private boolean adminYn;
 
     private String userStatus; // 이용가능 상태, 정지상태
+
+    private String zipcode;
+    private String addr;
+    private String addrDetail;
+
+    private LocalDateTime lastLoginDt;
 
 }
 

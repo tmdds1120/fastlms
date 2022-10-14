@@ -38,14 +38,15 @@ public class AdminCourseController extends BaseController{
 
         }
 
-
         String queryString = parameter.getQueryString();
         String pagerHtml =
-                super.getPagerHtml(totalCount, parameter.getPageSize(), parameter.getPageIndex(), queryString);
+                getPagerHtml(totalCount, parameter.getPageSize(), parameter.getPageIndex(), queryString);
 
         model.addAttribute("list",courseList);
         model.addAttribute("totalCount",totalCount);
         model.addAttribute("pager",pagerHtml);
+
+        System.out.println(totalCount);
 
 
 
@@ -63,7 +64,7 @@ public class AdminCourseController extends BaseController{
         categoryService.list();
 
         boolean editMode = req.getRequestURI().contains("/edit.do");
-        //이게 flase 라는거 아녀
+
         CourseDto detail = new CourseDto();
 
         System.out.println(editMode+": editMode");
@@ -78,8 +79,6 @@ public class AdminCourseController extends BaseController{
 
             }
             detail = existCourse;
-
-
         }
 
         model.addAttribute("detail", detail);
@@ -88,11 +87,13 @@ public class AdminCourseController extends BaseController{
 
     }
 
-    @PostMapping(value = {"/admin/curse/add.do", "/admin/course/edit.do"})
+    @PostMapping(value = {"/admin/course/add.do", "/admin/course/edit.do"})
     public String addSubmit(Model model,
             HttpServletRequest req,CourseInput parameter){
 
+        boolean result;
         boolean editMode = req.getRequestURI().contains("/edit.do");
+        // 단순 등록의 경우는 editMode 가 false 이니까 넘어간다
         if (editMode){
             long id =parameter.getId();
             CourseDto existCourse = courseService.getById(id);
@@ -101,15 +102,26 @@ public class AdminCourseController extends BaseController{
                 return "common/error";
             }
             // 수정 전용메서드
-            boolean result = courseService.set(parameter);
+            result = courseService.set(parameter);
 
         } else {
-            boolean result = courseService.add(parameter);
+            //단순 코스 등록
+            result = courseService.add(parameter);
 
         }
 
         return "redirect:/admin/course/list.do";
 
+    }
+
+    @PostMapping("/admin/course/delete.do")
+    public String del(Model model, HttpServletRequest req
+    ,CourseInput parameter){
+
+        boolean result =courseService.del(parameter.getIdList());
+
+
+        return "redirect:/admin/course/list.do ";
     }
 
 

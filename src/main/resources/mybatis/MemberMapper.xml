@@ -39,7 +39,7 @@
 
 
 
-    <select id="Alist" resultType="com.zerobase.fastlms.admin.dto.MemberDto">
+    <select id="Alist" resultType="com.zerobase.fastlms.member.dto.MemberDto">
         select *
         from member
         where 1 = 1
