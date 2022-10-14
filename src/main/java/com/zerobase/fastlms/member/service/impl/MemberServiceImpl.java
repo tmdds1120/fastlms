@@ -197,19 +197,17 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberDto> list(MemberParam parameter) {
 
         long totalCount = memberMapper.selectListCount(parameter);
-        List<MemberDto> list = memberMapper.Alist(parameter);
-
-        if (CollectionUtils.isEmpty(list)){
-            int i =0;
-            for (MemberDto x: list){
+        List<MemberDto> list = memberMapper.selectList(parameter);
+        if (!CollectionUtils.isEmpty(list)) {
+            int i = 0;
+            for(MemberDto x : list) {
                 x.setTotalCount(totalCount);
-                x.setSeq(totalCount- parameter.getPageStart()-i);
+                x.setSeq(totalCount - parameter.getPageStart() - i);
                 i++;
-
             }
         }
-        return list;
 
+        return list;
     }
 
     @Override

@@ -22,26 +22,31 @@ public class AdminMemberController extends BaseController {
 
 
     @GetMapping("/admin/member/list.do")
-    public String list(Model model, MemberParam parameter){
+    public String list(Model model, MemberParam parameter) {
 
         parameter.init();
-
         List<MemberDto> members = memberService.list(parameter);
 
-        long totalCount =0;
-        if(members != null && members.size()>0){
+        long totalCount = 0;
+
+
+        for (MemberDto data :
+                members) {
+            System.out.println(data);
+        }
+        if (members != null && members.size() > 0) {
             totalCount = members.get(0).getTotalCount();
         }
-        String queryString =parameter.getQueryString();
+
+        String queryString = parameter.getQueryString();
         String pagerHtml = getPagerHtml(totalCount, parameter.getPageSize(), parameter.getPageIndex(), queryString);
 
-
-        model.addAttribute("list",members);
-        model.addAttribute("totalCount",totalCount);
+        model.addAttribute("list", members);
+        model.addAttribute("totalCount", totalCount);
         model.addAttribute("pager", pagerHtml);
-        return "/admin/member/list";
-    }
 
+        return "admin/member/list";
+    }
     @GetMapping("/admin/member/detail.do")
     public String detail(Model model, MemberParam parameter){
 

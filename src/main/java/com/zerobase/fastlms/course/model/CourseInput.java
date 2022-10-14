@@ -22,6 +22,10 @@ public class CourseInput {
     String idList;
 
 
+    //추가
+    String filename;
+    String urlFilename;
+
 
 
 }
