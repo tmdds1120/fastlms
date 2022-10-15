@@ -108,42 +108,7 @@ public class AdminCourseController extends BaseController{
         return "redirect:/admin/course/list.do ";
     }
 
-    private String[] getNewSaveFile(String baseLocalPath, String baseUrlPath, String originalFilename){
-        LocalDate now = LocalDate.now();
-        String[] dirs = {
-                String.format("%s/%d/", baseLocalPath,now.getYear()),
-                String.format("%s/%d/%02d/", baseLocalPath, now.getYear(),now.getMonthValue()),
-                String.format("%s/%d/%02d/%02d/", baseLocalPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth())};
 
-        String urlDir = String.format("%s/%d/%02d/%02d/", baseUrlPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth());
-
-        for(String dir : dirs) {
-            File file = new File(dir);
-            if (!file.isDirectory()) {
-                file.mkdir();
-            }
-        }
-
-        String fileExtension="";
-        if (originalFilename != null){
-            int dotPos = originalFilename.lastIndexOf(".");
-            if (dotPos > -1){
-                fileExtension = originalFilename.substring(dotPos +1);
-            }
-        }
-
-        String uuid = UUID.randomUUID().toString().replace("-","");
-        String newFileName = String.format("%s%s", dirs[2], uuid);
-        String newUrlFileName = String.format("%s%s",urlDir,uuid);
-        if (fileExtension.length()>0){
-            newFileName+="."+fileExtension;
-            newUrlFileName+="."+fileExtension;
-
-        }
-
-        return new String[]{newFileName,newUrlFileName};
-
-    }
 
     @PostMapping(value = {"/admin/course/add.do", "/admin/course/edit.do"})
     public String addSubmit(Model model,
@@ -154,7 +119,7 @@ public class AdminCourseController extends BaseController{
         String urlFileName ="";
         if (file != null){
             String originalFilename = file.getOriginalFilename();
-            String baseLocalPath = "/Users/";
+            String baseLocalPath = "C:/Users/tmdds/Desktop/part2Project/fastlms/files/test.png";
             String baseUrlPath="/files";
             String[] arrFilename = getNewSaveFile(baseLocalPath,baseUrlPath,originalFilename);
             saveFileName = arrFilename[0];
@@ -192,6 +157,45 @@ public class AdminCourseController extends BaseController{
         }
 
         return "redirect:/admin/course/list.do";
+
+    }
+
+
+    // 업로드 파일 저장 로직
+    private String[] getNewSaveFile(String baseLocalPath, String baseUrlPath, String originalFilename){
+        LocalDate now = LocalDate.now();
+        String[] dirs = {
+                String.format("%s/%d/", baseLocalPath,now.getYear()),
+                String.format("%s/%d/%02d/", baseLocalPath, now.getYear(),now.getMonthValue()),
+                String.format("%s/%d/%02d/%02d/", baseLocalPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth())};
+
+        String urlDir = String.format("%s/%d/%02d/%02d/", baseUrlPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+
+        for(String dir : dirs) {
+            File file = new File(dir);
+            if (!file.isDirectory()) {
+                file.mkdir();
+            }
+        }
+
+        String fileExtension="";
+        if (originalFilename != null){
+            int dotPos = originalFilename.lastIndexOf(".");
+            if (dotPos > -1){
+                fileExtension = originalFilename.substring(dotPos +1);
+            }
+        }
+
+        String uuid = UUID.randomUUID().toString().replace("-","");
+        String newFileName = String.format("%s%s", dirs[2], uuid);
+        String newUrlFileName = String.format("%s%s",urlDir,uuid);
+        if (fileExtension.length()>0){
+            newFileName+="."+fileExtension;
+            newUrlFileName+="."+fileExtension;
+
+        }
+
+        return new String[]{newFileName,newUrlFileName};
 
     }
 
