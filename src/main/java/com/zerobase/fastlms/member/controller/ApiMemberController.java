@@ -27,7 +27,8 @@ public class ApiMemberController {
         String userId = principal.getName();
 
         // 내강좌인지 확인하는 로직
-        TakeCourseDto detail = takeCourseService.detail(parameter.getTakeCourseId());        if (detail == null) {
+        TakeCourseDto detail = takeCourseService.detail(parameter.getTakeCourseId());
+        if (detail == null) {
             ResponseResult responseResult = new ResponseResult(false, "수강 신청 정보가 존재하지 않습니다.");
             return ResponseEntity.ok().body(responseResult);
         }

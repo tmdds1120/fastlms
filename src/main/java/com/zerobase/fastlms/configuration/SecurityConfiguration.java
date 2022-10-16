@@ -25,6 +25,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
     private final MemberService memberService;
+    private final UserAuthenticationSuccessHandler userAuthenticationSuccessHandler;
 
     @Bean
     PasswordEncoder getPasswordEncoder() {
@@ -36,12 +37,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         return new UserAuthenticationFailureHandler();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(memberService)
-                .passwordEncoder(getPasswordEncoder());
 
-        super.configure(auth);
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/favicon.ico", "/files/**");
+
+        super.configure(web);
     }
 
 
@@ -70,6 +71,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         http.formLogin()
                 .loginPage("/member/login")
                 .failureHandler(getFailureHandler())
+                .successHandler(userAuthenticationSuccessHandler)
                 .permitAll();
 
         http.logout()
@@ -82,6 +84,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
                 .accessDeniedPage("/error/denied");
         super.configure(http);
     }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(memberService)
+                .passwordEncoder(getPasswordEncoder());
+
+        super.configure(auth);
+    }
+
+
 
 
 

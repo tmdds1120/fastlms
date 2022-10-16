@@ -1,11 +1,10 @@
 package com.zerobase.fastlms.course.controller;
 
-import com.zerobase.fastlms.admin.service.CategoryService;
+import com.zerobase.fastlms.admin.category.service.CategoryService;
 import com.zerobase.fastlms.course.dto.CourseDto;
 import com.zerobase.fastlms.course.model.CourseInput;
 import com.zerobase.fastlms.course.model.CourseParam;
 import com.zerobase.fastlms.course.service.CourseService;
-import com.zerobase.fastlms.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -119,7 +118,7 @@ public class AdminCourseController extends BaseController{
         String urlFileName ="";
         if (file != null){
             String originalFilename = file.getOriginalFilename();
-            String baseLocalPath = "C:/Users/tmdds/Desktop/part2Project/fastlms/files/test.png";
+            String baseLocalPath = "C:/Users/tmdds/Desktop/part2Project/fastlms/files";
             String baseUrlPath="/files";
             String[] arrFilename = getNewSaveFile(baseLocalPath,baseUrlPath,originalFilename);
             saveFileName = arrFilename[0];

@@ -70,15 +70,14 @@ public class MemberController {
     @PostMapping("/member/register")
     public String registerSubmit(Model model, HttpServletRequest req, HttpServletResponse res
         , MemberInput parameter){
-        // req,res 뿐만아니라 따로 생성한 데이터 객체의 타입으로 데이터를 받아올 수가 있는데
-        // 조건이 뭐지? 1. html 에서 post 작성? postMapping 으로 설정? 객체매개변수로 받기?
+
 
         boolean result = memberService.register(parameter);
 
         System.out.println(result);
         model.addAttribute("result", result);
 
-        System.out.println(parameter.toString());
+
 
         /**
          * member 객체 생성후 거기에 post-form 으로 받아온 member 객체에 선언한

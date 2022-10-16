@@ -1,8 +1,10 @@
 package com.zerobase.fastlms.member.service.impl;
 
 
-import com.zerobase.fastlms.admin.mapper.MemberMapper;
-import com.zerobase.fastlms.admin.model.MemberParam;
+import com.zerobase.fastlms.admin.mailtemplate.entity.Mailtemplate;
+import com.zerobase.fastlms.admin.mailtemplate.repository.MailtemplateRepository;
+import com.zerobase.fastlms.member.mapper.MemberMapper;
+import com.zerobase.fastlms.admin.member.model.MemberParam;
 import com.zerobase.fastlms.common.components.MailComponents;
 import com.zerobase.fastlms.course.model.ServiceResult;
 import com.zerobase.fastlms.member.dto.MemberDto;
@@ -12,6 +14,7 @@ import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.exception.MemberStopUserException;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
+import com.zerobase.fastlms.member.repository.MemberLoginHistoryRepository;
 import com.zerobase.fastlms.member.repository.MemberRepository;
 import com.zerobase.fastlms.member.service.MemberService;
 import com.zerobase.fastlms.util.PasswordUtils;
@@ -38,8 +41,11 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final MailComponents mailComponents;
+    private final MailtemplateRepository mailtemplateRepository;
 
     private final MemberMapper memberMapper;
+
+    private MemberLoginHistoryRepository memberLoginHistoryRepository;
 
     /**
      *  화원 가입
@@ -75,14 +81,21 @@ public class MemberServiceImpl implements MemberService {
                 .build();
         memberRepository.save(member);
 
-        String email = parameter.getUserId();
-        String subject = "fastlms 사이트 가입을 축하드립니다";
-        String text = "<p>fastlms 사이트 가입축하 text 문 </p>"
-                +"<p>아래 링크를 클릭하셔서 가입을 완료하세요</p>"
-                +"<div><a href=\"http://localhost:8080/member/email-auth?id="+uuid+"\""
-                        +">가입완료</a></div>";
+        mailtemplateRepository.findByMailtemplateKey(Mailtemplate.MAILTEMPLATE_KEY_MEMBER_REGISTER).ifPresent(e -> {
+            String email = parameter.getUserId();
+            String subject = e.getTitle();
+            String text = e.getContents().replace("####URL_AUTH####", "http://localhost:8080/member/email-auth?id=" + uuid);
+            mailComponents.sendMail(email, subject, text);
+        });
 
-        mailComponents.sendMail(email,subject,text);
+//        String email = parameter.getUserId();
+//        String subject = "fastlms 사이트 가입을 축하드립니다";
+//        String text = "<p>fastlms 사이트 가입축하 text 문 </p>"
+//                +"<p>아래 링크를 클릭하셔서 가입을 완료하세요</p>"
+//                +"<div><a href=\"http://localhost:8080/member/email-auth?id="+uuid+"\""
+//                        +">가입완료</a></div>";
+
+//        mailComponents.sendMail(email,subject,text);
 
         return true;
     }
@@ -133,13 +146,19 @@ public class MemberServiceImpl implements MemberService {
         member.setResetPasswordLimitDt(LocalDateTime.now().plusDays(1));
         memberRepository.save(member);
 
-        String email = parameter.getUserId();
-        String subject = "[fastlms] 비밀번호 초기화 메일입니다";
-        String text ="<p>fastlms 비밀번호 초기화 메일 입니다</p>" +
-                "<p>아래 링크를 클릭하여 비밀번호를 초기화 해주세요.</p>"+
-                "<div><a target='_blank' href='http://localhost:8080/member/reset/password?id="+uuid+"'>비밀번호 초기화 링크</div>";
+//        String email = parameter.getUserId();
+//        String subject = "[fastlms] 비밀번호 초기화 메일입니다";
+//        String text ="<p>fastlms 비밀번호 초기화 메일 입니다</p>" +
+//                "<p>아래 링크를 클릭하여 비밀번호를 초기화 해주세요.</p>"+
+//                "<div><a target='_blank' href='http://localhost:8080/member/reset/password?id="+uuid+"'>비밀번호 초기화 링크</div>";
+//        mailComponents.sendMail(email,subject,text);
 
-        mailComponents.sendMail(email,subject,text);
+        mailtemplateRepository.findByMailtemplateKey(Mailtemplate.MAILTEMPLATE_KEY_MEMBER_RESET).ifPresent(e -> {
+            String email = parameter.getUserId();
+            String subject = e.getTitle();
+            String text = e.getContents().replace("####URL_AUTH####", "http://localhost:8080/member/reset/password?id=" + uuid);
+            mailComponents.sendMail(email, subject, text);
+        });
 
         return true;
     }
@@ -212,19 +231,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDto detail(String userId) {
-
         //Member 는 row 한 데이터 -> 가공을해서 dto 로 보낸다
-        Optional<Member> optionalMember =
-         memberRepository.findById(userId);
-
-        if (!optionalMember.isPresent()){
+        Optional<Member> optionalMember  = memberRepository.findById(userId);
+        if (!optionalMember.isPresent()) {
             return null;
         }
 
         Member member = optionalMember.get();
+        MemberDto memberDto = MemberDto.of(member);
+//        memberLoginHistoryRepository.findByUserId(member.getUserId()).ifPresent(e -> {
+//            memberDto.setLoginHistoryList(e);
+//        });
 
-
-        return MemberDto.of(member);
+        return memberDto;
     }
 
     @Override

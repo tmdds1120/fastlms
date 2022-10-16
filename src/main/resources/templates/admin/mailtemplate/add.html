@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 화면 </title>
+    <style>
+        .detail table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .detail table th, .detail table td {
+            border:solid 1px #000;
+        }
+
+        .detail table td input {
+            width: calc(100% - 20px);
+        }
+        .detail table td textarea {
+            width: calc(100% - 20px);
+            height: 150px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .buttons a, .buttons button {
+            border-width: 0;
+            background-color: transparent;
+            text-decoration: underline;
+            font-size: 14px;
+            line-height: 20px;
+            height: 20px;
+            color: #000;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
+<h1>메일 템플릿 관리 - 메일 템플릿 등록</h1>
+
+<div class="detail">
+
+    <form id="submitForm" method="post">
+        <table>
+            <tbody>
+            <tr>
+                <th>
+                    메일 템플릿 KEY
+                </th>
+                <td>
+                    <input th:value="${detail.mailtemplateKey}"
+                           th:readonly="${editMode}"
+                           type="text" name="mailtemplateKey" required placeholder="메일 템플릿 KEY" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    메일 템플릿 제목
+                </th>
+                <td>
+                    <input th:value="${detail.title}" type="text" name="title" required placeholder="메일 템플릿 제목" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    메일 템플릿 내용
+                </th>
+                <td>
+                    <textarea th:text="${detail.contents}" name="contents" required placeholder="메일 템플릿 내용"></textarea>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="buttons">
+            <button th:if="${editMode}" type="submit"> 메일 템플릿 수정 하기 </button>
+            <button th:if="${!editMode}" type="submit"> 메일 템플릿 등록 하기 </button>
+            <a href="/admin/mailtemplate/list.do"> 목록 이동 </a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>
