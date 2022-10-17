@@ -45,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
 
-    private MemberLoginHistoryRepository memberLoginHistoryRepository;
+    private final MemberLoginHistoryRepository memberLoginHistoryRepository;
 
     /**
      *  화원 가입
@@ -231,7 +231,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDto detail(String userId) {
-        //Member 는 row 한 데이터 -> 가공을해서 dto 로 보낸다
+        //Member 는 row 한 데이터 -> dto 로 가공을해서  보낸다
         Optional<Member> optionalMember  = memberRepository.findById(userId);
         if (!optionalMember.isPresent()) {
             return null;
@@ -239,9 +239,11 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = optionalMember.get();
         MemberDto memberDto = MemberDto.of(member);
-//        memberLoginHistoryRepository.findByUserId(member.getUserId()).ifPresent(e -> {
-//            memberDto.setLoginHistoryList(e);
-//        });
+        System.out.println(memberDto.toString());
+        System.out.println(member.toString());
+        memberLoginHistoryRepository.findByUserId(memberDto.getUserId()).ifPresent(e -> {
+            memberDto.setLoginHistoryList(e);
+        });
 
         return memberDto;
     }

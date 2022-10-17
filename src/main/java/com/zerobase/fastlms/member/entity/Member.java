@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @NoArgsConstructor
+@ToString
 public class Member implements MemberCode{
 
     @Id
